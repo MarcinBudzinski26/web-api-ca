@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -9,10 +9,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
-import { auth } from "../../auth/firebaseConfig";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { AuthContext } from "../../contexts/authContext"; // Use AuthContext
 
-const Offset = styled("div")(({ theme }) => theme.mixins.toolbar); // Offset for AppBar spacing
+const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const menuOptions = [
   { label: "Home", path: "/" },
@@ -27,30 +26,26 @@ const SiteHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [user] = useAuthState(auth); // Check user authentication state
-  const [anchorEl, setAnchorEl] = useState(null); // Manage dropdown menu state
+  const { isAuthenticated, userName, signout } = useContext(AuthContext); // Access AuthContext
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  // Open the dropdown menu
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  // Close the dropdown menu
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  // Handle navigation when a menu option is clicked
   const handleMenuSelect = (path) => {
-    setAnchorEl(null); // Close menu after selection
-    navigate(path); // Navigate to the selected page
+    setAnchorEl(null);
+    navigate(path);
   };
 
-  // Handle logout action
   const handleLogout = () => {
-    auth.signOut(); // Sign out the user
-    navigate("/login"); // Redirect to login page
+    signout(); // Call AuthContext's signout function
+    navigate("/login"); // Redirect to login after logout
   };
 
   return (
@@ -58,13 +53,12 @@ const SiteHeader = () => {
       <AppBar
         position="fixed"
         sx={{
-          backgroundColor: "#333333", // Header background
-          color: "#FF8C00", // Text color
+          backgroundColor: "#333333",
+          color: "#FF8C00",
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Toolbar>
-          {/* Hamburger Menu Icon */}
           <IconButton
             edge="start"
             color="inherit"
@@ -77,7 +71,6 @@ const SiteHeader = () => {
             <MenuIcon />
           </IconButton>
 
-          {/* Dropdown Menu */}
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
@@ -110,7 +103,6 @@ const SiteHeader = () => {
             ))}
           </Menu>
 
-          {/* App Title */}
           <Typography
             variant="h5"
             sx={{
@@ -124,7 +116,6 @@ const SiteHeader = () => {
             Reel World
           </Typography>
 
-          {/* Section Names as Navigation Buttons */}
           <div style={{ flexGrow: 1, display: "flex", gap: "15px" }}>
             {menuOptions.map((option) => (
               <Button
@@ -144,10 +135,8 @@ const SiteHeader = () => {
             ))}
           </div>
 
-          {/* User Authentication Display */}
-          {user ? (
+          {isAuthenticated ? (
             <>
-              {/* Display User Email */}
               <Button
                 onClick={() => navigate("/dashboard")}
                 sx={{
@@ -157,9 +146,8 @@ const SiteHeader = () => {
                   marginRight: 2,
                 }}
               >
-                {user.email}
+                {userName}
               </Button>
-              {/* Logout Button */}
               <Button
                 onClick={handleLogout}
                 sx={{
@@ -173,7 +161,6 @@ const SiteHeader = () => {
             </>
           ) : (
             <>
-              {/* Login and Sign-Up Buttons */}
               <Button
                 onClick={() => navigate("/login")}
                 sx={{
@@ -197,7 +184,7 @@ const SiteHeader = () => {
           )}
         </Toolbar>
       </AppBar>
-      <Offset /> {/* Ensures page content is not overlapped by AppBar */}
+      <Offset />
     </>
   );
 };
