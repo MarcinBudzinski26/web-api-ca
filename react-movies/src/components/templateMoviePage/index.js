@@ -3,7 +3,7 @@ import MovieHeader from "../headerMovie"; // Header component to display movie d
 import Grid from "@mui/material/Grid2";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { getMovieImages } from "../../api/tmdb-api"; // API call to fetch movie images
+import { getMovieImages } from "../../api/movies-api"; // API call to fetch movie images
 import { useQuery } from "react-query";
 import Spinner from "../spinner"; // Loading spinner component
 

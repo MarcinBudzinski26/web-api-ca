@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import PageTemplate from "../components/templateMoviePage";
 import MovieDetails from "../components/movieDetails";
 import Spinner from "../components/spinner";
-import { getMovie, getMovieRecommendations, getMovieCredits } from "../api/tmdb-api";
+import { getMovie, getMovieRecommendations, getMovieCredits } from "../api/movies-api";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";

@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import PageTemplate from "../components/templateMovieListPage";
 import Spinner from "../components/spinner";
 import AddToFavoritesIcon from "../components/cardIcons/addToFavorites";
-import { getMovies } from "../api/tmdb-api";
+import { getMovies } from "../api/movies-api";
 
 const HomePage = () => {
   // Fetch only the first page of movies

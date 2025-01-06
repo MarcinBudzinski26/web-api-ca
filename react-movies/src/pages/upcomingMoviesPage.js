@@ -1,7 +1,7 @@
 import React from "react";
 import PageTemplate from "../components/templateMovieListPage"; // Template for displaying a list of movies
 import { useQuery } from "react-query"; // Hook for handling API data fetching
-import { getUpcomingMovies } from "../api/tmdb-api"; // API function to fetch upcoming movies
+import { getUpcomingMovies } from "../api/movies-api"; // API function to fetch upcoming movies
 import Spinner from "../components/spinner"; // Loading spinner component
 import AddToMustWatchIcon from "../components/cardIcons/addToMustWatch"; // Action icon for adding movies to "Must Watch"
 

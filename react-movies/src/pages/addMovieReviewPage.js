@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
-import { getMovie } from "../api/tmdb-api";
+import { getMovie } from "../api/movies-api";
 import PageTemplate from "../components/templateMoviePage";
 import Spinner from "../components/spinner";
 import Typography from "@mui/material/Typography";

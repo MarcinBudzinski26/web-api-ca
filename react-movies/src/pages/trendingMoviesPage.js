@@ -2,7 +2,7 @@ import React from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
-import { getTrendingMovies } from "../api/tmdb-api";
+import { getTrendingMovies } from "../api/movies-api";
 
 const TrendingMoviesPage = () => {
   // Fetch trending movies from the API using react-query

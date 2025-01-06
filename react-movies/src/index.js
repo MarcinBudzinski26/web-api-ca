@@ -1,6 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -8,6 +8,7 @@ import "@fontsource/lexend"; // Import Lexend font
 
 // Contexts and Pages
 import MoviesContextProvider from "./contexts/moviesContext";
+import AuthContextProvider from "./contexts/authContext"; // Import AuthContextProvider
 import HomePage from "./pages/homePage";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
@@ -20,12 +21,11 @@ import ActorDetailsPage from "./pages/actorDetailsPage";
 import TrendingMoviesPage from "./pages/trendingMoviesPage";
 import MoviesByProductionPage from "./pages/moviesByProductionPage";
 
-// Authentication and Dashboard
-import LoginPage from "./auth/LoginPage";
+// Authentication and Protected Routes
+import LoginPage from "./pages/LoginPage";
 import SignupPage from "./auth/SignupPage";
-import PrivateRoute from "./auth/PrivateRoute";
+import ProtectedRoutes from "./protectedRoutes"; // Adjusted for consistency
 import DashboardPage from "./user/DashboardPage";
-
 
 // Components
 import SiteHeader from "./components/siteHeader";
@@ -63,35 +63,40 @@ const App = () => (
   <ThemeProvider theme={theme}>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <SiteHeader />
-        <MoviesContextProvider>
-          <Routes>
-            {/* Static Pages */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-            <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
-            <Route path="/movies/mustwatch" element={<MustWatchPage />} />
-            <Route path="/movies/trending" element={<TrendingMoviesPage />} />
-            <Route path="/movies/toprated" element={<TopRatedMoviesPage />} />
+        <AuthContextProvider> {/* Wrap here */}
+          <MoviesContextProvider>
+            <SiteHeader />
+            <Routes>
+              {/* Public Pages */}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
+              <Route path="/movies/trending" element={<TrendingMoviesPage />} />
+              <Route path="/movies/toprated" element={<TopRatedMoviesPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
 
-            {/* Parameterized Routes */}
-            <Route path="/movies/:id" element={<MovieDetailsPage />} />
-            <Route path="/reviews/:id" element={<MovieReviewPage />} />
-            <Route path="/reviews/form" element={<AddMovieReviewPage />} />
-            <Route path="/actors/:id" element={<ActorDetailsPage />} />
-            <Route path="/company/:id" element={<MoviesByProductionPage />} />
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
+                <Route path="/movies/mustwatch" element={<MustWatchPage />} />
+                <Route path="/movies/:id" element={<MovieDetailsPage />} />
+                <Route path="/reviews/:id" element={<MovieReviewPage />} />
+                <Route path="/reviews/form" element={<AddMovieReviewPage />} />
+                <Route path="/actors/:id" element={<ActorDetailsPage />} />
+                <Route path="/company/:id" element={<MoviesByProductionPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+              </Route>
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-
-          </Routes>
-        </MoviesContextProvider>
+              {/* Redirect for undefined routes */}
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </MoviesContextProvider>
+        </AuthContextProvider> {/* End wrapping here */}
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </ThemeProvider>
 );
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+const rootElement = createRoot(document.getElementById("root"));
+rootElement.render(<App />);
