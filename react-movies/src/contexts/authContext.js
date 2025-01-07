@@ -8,31 +8,50 @@ const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(existingToken);
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState(""); // Add userId to state
 
-  //Function to put JWT token in local storage.
+  // Function to put JWT token in local storage
   const setToken = (data) => {
     localStorage.setItem("token", data);
     setAuthToken(data);
-  }
-
-  const authenticate = async (username, password) => {
-    const result = await login(username, password);
-    if (result.token) {
-      setToken(result.token)
-      setIsAuthenticated(true);
-      setUserName(username);
-    }
   };
 
+  // Authenticate user and store userId
+  const authenticate = async (username, password) => {
+    try {
+      const result = await login(username, password);
+      if (result.token && result.userId) {
+        setToken(result.token);
+        setIsAuthenticated(true);
+        setUserName(username);
+        setUserId(result.userId);
+        return { success: true }; // Indicate successful login
+      } else {
+        return { success: false, message: "Invalid username or password." }; // Handle invalid login
+      }
+    } catch (error) {
+      return { success: false, message: error.message || "An error occurred during login." }; // Return error message
+    }
+  };
+  
+
+  // Register user
   const register = async (username, password) => {
     const result = await signup(username, password);
     console.log(result.code);
-    return (result.code == 201) ? true : false;
+    return result.code === 201 ? true : false;
   };
 
+  // Sign out user
   const signout = () => {
-    setTimeout(() => setIsAuthenticated(false), 100);
-  }
+    setTimeout(() => {
+      setIsAuthenticated(false);
+      setAuthToken(null);
+      setUserName("");
+      setUserId(""); // Clear userId
+      localStorage.removeItem("token"); // Clear token
+    }, 100);
+  };
 
   return (
     <AuthContext.Provider
@@ -41,7 +60,8 @@ const AuthContextProvider = (props) => {
         authenticate,
         register,
         signout,
-        userName
+        userName,
+        userId, // Make userId accessible
       }}
     >
       {props.children}

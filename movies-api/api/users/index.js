@@ -11,7 +11,7 @@ router.get('/', asyncHandler(async (req, res) => {
     res.status(200).json(users);
 }));
 
-
+// Register or Authenticate a User
 router.post('/', asyncHandler(async (req, res) => {
     try {
         if (!req.body.username || !req.body.password) {
@@ -23,28 +23,48 @@ router.post('/', asyncHandler(async (req, res) => {
             await authenticateUser(req, res);
         }
     } catch (error) {
-        // Log the error and return a generic error message
         console.error(error);
         res.status(500).json({ success: false, msg: 'Internal server error.' });
     }
 }));
 
-// Update a user
-router.put('/:id', asyncHandler(async (req, res) => {
-    if (req.body._id) delete req.body._id;
-    const result = await User.updateOne({
-        _id: req.params.id,
-    }, req.body);
-    if (result.matchedCount) {
-        res.status(200).json({ code: 200, msg: 'User Updated Successfully' });
+// Update password for a specific user
+router.put('/:id/password', asyncHandler(async (req, res) => {
+    const { password } = req.body;
+
+    if (!password) {
+        return res.status(400).json({ success: false, msg: 'Password is required.' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await User.updateOne(
+        { _id: req.params.id },
+        { password: hashedPassword }
+    );
+
+    if (result.modifiedCount) {
+        res.status(200).json({ success: true, msg: 'Password updated successfully.' });
     } else {
-        res.status(404).json({ code: 404, msg: 'Unable to Update User' });
+        res.status(404).json({ success: false, msg: 'User not found or password update failed.' });
     }
 }));
 
 
+// Delete a user by ID
+router.delete('/:id', asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return res.status(404).json({ success: false, msg: 'User not found.' });
+    }
+
+    await User.deleteOne({ _id: req.params.id });
+    res.status(200).json({ success: true, msg: 'User deleted successfully.' });
+}));
+
 async function registerUser(req, res) {
-    // Add input validation logic here
     await User.create(req.body);
     res.status(201).json({ success: true, msg: 'User successfully created.' });
 }
@@ -58,11 +78,10 @@ async function authenticateUser(req, res) {
     const isMatch = await user.comparePassword(req.body.password);
     if (isMatch) {
         const token = jwt.sign({ username: user.username }, process.env.SECRET);
-        res.status(200).json({ success: true, token: 'BEARER ' + token });
+        res.status(200).json({ success: true, userId: user._id, token: 'BEARER ' + token });
     } else {
         res.status(401).json({ success: false, msg: 'Wrong password.' });
     }
 }
-
 
 export default router;

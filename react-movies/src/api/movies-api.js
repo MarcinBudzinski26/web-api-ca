@@ -128,17 +128,23 @@ export const getMovieReviews = async (id) => {
   return response.json();
 };
 
-// User login
 export const login = async (username, password) => {
   const response = await fetch('http://localhost:8080/api/users', {
+      method: 'POST',
       headers: {
           'Content-Type': 'application/json',
       },
-      method: 'post',
       body: JSON.stringify({ username, password }),
   });
-  return response.json();
+
+  if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.msg || "Login failed.");
+  }
+
+  return await response.json(); // Return { success, userId, token }
 };
+
 
 // User signup
 export const signup = async (username, password) => {
@@ -151,3 +157,39 @@ export const signup = async (username, password) => {
   });
   return response.json();
 };
+
+export const updatePassword = async (id, password) => {
+  const response = await fetch(`http://localhost:8080/api/users/${id}/password`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ password }),
+  });
+
+  if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.msg || 'Failed to update password.');
+  }
+
+  return response.json();
+};
+
+
+// Delete a user by ID
+export const deleteUser = async (userId) => {
+  const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: window.localStorage.getItem("token"),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete user.");
+  }
+
+  return response.json();
+};
+

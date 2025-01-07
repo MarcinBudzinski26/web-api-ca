@@ -8,7 +8,7 @@ import "@fontsource/lexend"; // Import Lexend font
 
 // Contexts and Pages
 import MoviesContextProvider from "./contexts/moviesContext";
-import AuthContextProvider from "./contexts/authContext"; // Import AuthContextProvider
+import AuthContextProvider from "./contexts/authContext";
 import HomePage from "./pages/homePage";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import FavoriteMoviesPage from "./pages/favoriteMoviesPage";
@@ -23,8 +23,8 @@ import MoviesByProductionPage from "./pages/moviesByProductionPage";
 
 // Authentication and Protected Routes
 import LoginPage from "./pages/LoginPage";
-import SignupPage from "./auth/SignupPage";
-import ProtectedRoutes from "./protectedRoutes"; // Adjusted for consistency
+import SignupPage from "./pages/SignupPage";
+import ProtectedRoutes from "./protectedRoutes"; 
 import DashboardPage from "./user/DashboardPage";
 
 // Components
