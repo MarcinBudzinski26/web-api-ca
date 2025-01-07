@@ -20,7 +20,7 @@ export const getTopRatedMovies = async () => {
 
 // Fetch movies by a specific production company
 export const getMoviesByCompany = async (companyId) => {
-  const response = await fetch(`http://localhost:8080/api/movies/company/${companyId}`, {
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/company/${companyId}`, {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
@@ -60,23 +60,36 @@ export const getUpcomingMovies = async () => {
 
 // Fetch details for a specific actor
 export const getActorDetails = async (id) => {
-  const response = await fetch(`http://localhost:8080/api/actors/${id}`, {
-      headers: {
-          'Authorization': window.localStorage.getItem('token'),
-      },
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/actor/${id}`, {
+    headers: {
+      Authorization: window.localStorage.getItem("token"),
+    },
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch actor details.");
+  }
+
   return response.json();
 };
 
 // Fetch movies an actor has appeared in
 export const getActorMovies = async (id) => {
-  const response = await fetch(`http://localhost:8080/api/actors/${id}/movies`, {
-      headers: {
-          'Authorization': window.localStorage.getItem('token'),
-      },
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/actor/${id}/movies`, {
+    headers: {
+      Authorization: window.localStorage.getItem("token"),
+    },
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to fetch actor movies.");
+  }
+
   return response.json();
 };
+
 
 export const getMovieCredits = async (id) => {
   const response = await fetch(`http://localhost:8080/api/movies/${id}/credits`, {
