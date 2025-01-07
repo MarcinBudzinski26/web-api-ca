@@ -10,7 +10,7 @@ export const getMovies = async () => {
 
 // Fetch top-rated movies
 export const getTopRatedMovies = async () => {
-  const response = await fetch('http://localhost:8080/api/movies/top-rated', {
+  const response = await fetch('http://localhost:8080/api/movies/tmdb/toprated', {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
@@ -30,7 +30,7 @@ export const getMoviesByCompany = async (companyId) => {
 
 // Fetch recommendations for a specific movie
 export const getMovieRecommendations = async (id) => {
-  const response = await fetch(`http://localhost:8080/api/movies/${id}/recommendations`, {
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/${id}/recommendations`, {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
@@ -40,7 +40,7 @@ export const getMovieRecommendations = async (id) => {
 
 // Fetch trending movies (daily)
 export const getTrendingMovies = async () => {
-  const response = await fetch('http://localhost:8080/api/movies/trending', {
+  const response = await fetch('http://localhost:8080/api/movies/tmdb/trending', {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
@@ -48,15 +48,16 @@ export const getTrendingMovies = async () => {
   return response.json();
 };
 
-// Fetch trending movies (daily)
+// Fetch upcoming movies
 export const getUpcomingMovies = async () => {
-  const response = await fetch('http://localhost:8080/api/movies/upcoming', {
+  const response = await fetch('http://localhost:8080/api/movies/tmdb/upcoming', {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
   });
   return response.json();
 };
+
 // Fetch details for a specific actor
 export const getActorDetails = async (id) => {
   const response = await fetch(`http://localhost:8080/api/actors/${id}`, {
@@ -77,7 +78,6 @@ export const getActorMovies = async (id) => {
   return response.json();
 };
 
-// Fetch cast and crew details for a specific movie
 export const getMovieCredits = async (id) => {
   const response = await fetch(`http://localhost:8080/api/movies/${id}/credits`, {
       headers: {
@@ -87,9 +87,10 @@ export const getMovieCredits = async (id) => {
   return response.json();
 };
 
+
 // Fetch details for a specific movie
 export const getMovie = async (id) => {
-  const response = await fetch(`http://localhost:8080/api/movies/${id}`, {
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/movie/${id}`, {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
@@ -99,7 +100,7 @@ export const getMovie = async (id) => {
 
 // Fetch genres from the API
 export const getGenres = async () => {
-  const response = await fetch('http://localhost:8080/api/genres', {
+  const response = await fetch('http://localhost:8080/api/movies/tmdb/genres', {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },

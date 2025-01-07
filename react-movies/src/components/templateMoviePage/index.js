@@ -10,9 +10,11 @@ import Spinner from "../spinner"; // Loading spinner component
 const TemplateMoviePage = ({ movie, children }) => {
   // Fetch movie images using React Query
   const { data, error, isLoading, isError } = useQuery(
-    ["images", { id: movie.id }], // Query key for caching
-    getMovieImages // Function to fetch images
-  );
+    ["images", movie.id], // Use only the ID as the query key
+    () => getMovieImages(movie.id) // Pass the ID directly
+);
+
+  console.log("TemplateMoviePage movie.id:", movie.id);
 
   // Show spinner while loading
   if (isLoading) {
@@ -66,5 +68,6 @@ const TemplateMoviePage = ({ movie, children }) => {
     </>
   );
 };
+
 
 export default TemplateMoviePage;

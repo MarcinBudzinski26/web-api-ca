@@ -38,6 +38,7 @@ export default function MovieCard({ movie }) {
   const handleMustWatchToggle = () => {
     isMustWatch ? removeFromMustWatch(movie) : addToMustWatch(movie);
   };
+  console.log("Movie ID in MovieCard:", movie.id);
 
   return (
     <Card
@@ -55,6 +56,7 @@ export default function MovieCard({ movie }) {
         image={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : imgPlaceholder}
         title={movie.title}
       />
+
 
       <CardContent>
         {/* Movie Title (clickable to go to Movie Details) */}

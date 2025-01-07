@@ -26,25 +26,25 @@ const MovieDetailsPage = () => {
     removeFromMustWatch,
   } = useContext(MoviesContext); // Access favorites and must-watch context
 
-  // Fetch movie details using the ID
-  const { data: movie, isLoading: isMovieLoading, isError: isMovieError } = useQuery(
-    ["movie", { id }],
-    getMovie
-  );
+// Fetch movie details using the ID
+const { data: movie, isLoading: isMovieLoading, isError: isMovieError } = useQuery(
+  ["movie", id], // Pass the movie ID directly
+  () => getMovie(id) // Ensure only the ID is passed to the function
+);
 
-  // Fetch recommended movies
-  const {
-    data: recommendations,
-    isLoading: isRecommendationsLoading,
-    isError: isRecommendationsError,
-  } = useQuery(["recommendations", { id }], getMovieRecommendations);
+// Fetch recommended movies
+const {
+  data: recommendations,
+  isLoading: isRecommendationsLoading,
+  isError: isRecommendationsError,
+} = useQuery(["recommendations", id], () => getMovieRecommendations(id));
 
-  // Fetch cast and crew (credits) for the movie
-  const {
-    data: credits,
-    isLoading: isCreditsLoading,
-    isError: isCreditsError,
-  } = useQuery(["credits", { id }], getMovieCredits);
+// Fetch cast and crew (credits) for the movie
+const { data: credits, isLoading: isCreditsLoading, isError: isCreditsError } = useQuery(
+  ["credits", id], // Ensure id is passed as a number or string, not an object
+  () => getMovieCredits(id)
+);
+
 
   // Show spinner while data is loading
   if (isMovieLoading || isRecommendationsLoading || isCreditsLoading) {
@@ -59,6 +59,9 @@ const MovieDetailsPage = () => {
       </Typography>
     );
   }
+  console.log("MovieDetailsPage ID:", id);
+  console.log("MovieDetailsPage movie:", movie);
+
 
   // Check if the movie is in favorites or must-watch list
   const isFavorite = favorites.includes(movie.id);
@@ -193,5 +196,6 @@ const MovieDetailsPage = () => {
     </div>
   );
 };
+
 
 export default MovieDetailsPage;
