@@ -8,7 +8,6 @@ import {
     getMovieImages,
     getTopRatedMovies,
     getMoviesByCompany,
-    discoverMoviesByCompany,
     getMovieRecommendations,
     getTrendingMovies,
     getActorDetails,
@@ -40,6 +39,20 @@ router.get('/', asyncHandler(async (req, res) => {
 
     res.status(200).json(returnObject);
 }));
+
+router.get('/:id/reviews', asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    if (!id || isNaN(Number(id))) {
+        return res.status(400).json({ message: "Invalid movie ID" });
+    }
+    const reviews = await getMovieReviews(id);
+    if (reviews) {
+        res.status(200).json(reviews);
+    } else {
+        res.status(404).json({ message: "Reviews not found", status_code: 404 });
+    }
+}));
+
 
 router.get('/:id/images', asyncHandler(async (req, res) => {
     const id = req.params.id;
@@ -163,15 +176,6 @@ router.get('/tmdb/company/:id/movies', asyncHandler(async (req, res) => {
     }
 }));
 
-// Discover movies by production company
-router.get('/tmdb/company/:id/discover', asyncHandler(async (req, res) => {
-    try {
-        const discoveredMovies = await discoverMoviesByCompany(req.params.id);
-        res.status(200).json(discoveredMovies);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}));
 
 // Fetch all movies (general discovery) with optional pagination
 router.get('/tmdb/movies', asyncHandler(async (req, res) => {
@@ -183,5 +187,6 @@ router.get('/tmdb/movies', asyncHandler(async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }));
+
 
 export default router;

@@ -20,13 +20,20 @@ export const getTopRatedMovies = async () => {
 
 // Fetch movies by a specific production company
 export const getMoviesByCompany = async (companyId) => {
-  const response = await fetch(`http://localhost:8080/api/movies/tmdb/company/${companyId}`, {
+  const response = await fetch(`http://localhost:8080/api/movies/tmdb/company/${companyId}/movies`, {
       headers: {
           'Authorization': window.localStorage.getItem('token'),
       },
   });
+
+  if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to fetch movies by company.");
+  }
+
   return response.json();
 };
+
 
 // Fetch recommendations for a specific movie
 export const getMovieRecommendations = async (id) => {
@@ -133,13 +140,17 @@ export const getMovieImages = async (id) => {
 
 // Fetch reviews for a specific movie
 export const getMovieReviews = async (id) => {
+  if (!id) {
+      throw new Error("Movie ID is undefined.");
+  }
   const response = await fetch(`http://localhost:8080/api/movies/${id}/reviews`, {
       headers: {
-          'Authorization': window.localStorage.getItem('token'),
+          Authorization: window.localStorage.getItem("token"),
       },
   });
   return response.json();
 };
+
 
 export const login = async (username, password) => {
   const response = await fetch('http://localhost:8080/api/users', {

@@ -14,12 +14,12 @@ import { AuthContext } from "../../contexts/authContext"; // Use AuthContext
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const menuOptions = [
-  { label: "Favorites", path: "/movies/favorites" },
+  { label: "Home", path: "/" },
   { label: "Upcoming Movies", path: "/movies/upcoming" },
-  { label: "Must Watch", path: "/movies/mustwatch" },
   { label: "Trending Movies", path: "/movies/trending" },
   { label: "Top Rated", path: "/movies/toprated" },
 ];
+
 
 const SiteHeader = () => {
   const navigate = useNavigate();
