@@ -14,7 +14,6 @@ import { AuthContext } from "../../contexts/authContext"; // Use AuthContext
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const menuOptions = [
-  { label: "Home", path: "/" },
   { label: "Favorites", path: "/movies/favorites" },
   { label: "Upcoming Movies", path: "/movies/upcoming" },
   { label: "Must Watch", path: "/movies/mustwatch" },
@@ -59,17 +58,19 @@ const SiteHeader = () => {
         }}
       >
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            sx={{ marginRight: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+          {isAuthenticated && ( // Show the dropdown menu only if logged in
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              sx={{ marginRight: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
           <Menu
             id="menu-appbar"
@@ -85,6 +86,21 @@ const SiteHeader = () => {
               horizontal: "left",
             }}
           >
+            {isAuthenticated && ( // Add Home button in the dropdown if logged in
+              <MenuItem
+                onClick={() => handleMenuSelect("/")}
+                sx={{
+                  fontWeight: location.pathname === "/" ? "bold" : "normal",
+                  color: location.pathname === "/" ? "#FF8C00" : "#FFFFFF",
+                  "&:hover": {
+                    backgroundColor: "#444444",
+                    color: "#FF8C00",
+                  },
+                }}
+              >
+                Home
+              </MenuItem>
+            )}
             {menuOptions.map((option) => (
               <MenuItem
                 key={option.label}
@@ -111,32 +127,44 @@ const SiteHeader = () => {
               color: "#FF8C00",
               cursor: "pointer",
             }}
-            onClick={() => navigate("/")}
+            onClick={() => (isAuthenticated ? navigate("/") : navigate("/login"))} // Navigate only if logged in
           >
             Reel World
           </Typography>
 
-          <div style={{ flexGrow: 1, display: "flex", gap: "15px" }}>
-            {menuOptions.map((option) => (
-              <Button
-                key={option.label}
-                onClick={() => navigate(option.path)}
-                sx={{
-                  color: location.pathname === option.path ? "#FF8C00" : "#FFFFFF",
-                  fontWeight: location.pathname === option.path ? "bold" : "normal",
-                  textDecoration: location.pathname === option.path ? "underline" : "none",
-                  "&:hover": {
-                    textDecoration: "underline",
-                  },
-                }}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </div>
-
           {isAuthenticated ? (
             <>
+              <div style={{ flexGrow: 1, display: "flex", gap: "15px" }}>
+                <Button
+                  onClick={() => navigate("/")}
+                  sx={{
+                    color: location.pathname === "/" ? "#FF8C00" : "#FFFFFF",
+                    fontWeight: location.pathname === "/" ? "bold" : "normal",
+                    textDecoration: location.pathname === "/" ? "underline" : "none",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  Home
+                </Button>
+                {menuOptions.map((option) => (
+                  <Button
+                    key={option.label}
+                    onClick={() => navigate(option.path)}
+                    sx={{
+                      color: location.pathname === option.path ? "#FF8C00" : "#FFFFFF",
+                      fontWeight: location.pathname === option.path ? "bold" : "normal",
+                      textDecoration: location.pathname === option.path ? "underline" : "none",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
               <Button
                 onClick={() => navigate("/dashboard")}
                 sx={{

@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import "@fontsource/lexend"; // Import Lexend font
+import "@fontsource/lexend";
 
 // Contexts and Pages
 import MoviesContextProvider from "./contexts/moviesContext";
@@ -20,11 +20,9 @@ import TopRatedMoviesPage from "./pages/topRatedMoviesPage";
 import ActorDetailsPage from "./pages/actorDetailsPage";
 import TrendingMoviesPage from "./pages/trendingMoviesPage";
 import MoviesByProductionPage from "./pages/moviesByProductionPage";
-
-// Authentication and Protected Routes
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import ProtectedRoutes from "./protectedRoutes"; 
+import ProtectedRoutes from "./protectedRoutes";
 import DashboardPage from "./user/DashboardPage";
 
 // Components
@@ -42,20 +40,17 @@ const queryClient = new QueryClient({
 
 const theme = createTheme({
   palette: {
-    primary: { main: "#FF8C00" }, // Orange
-    secondary: { main: "#333333" }, // Dark gray
-    background: { default: "#1C1C1C", paper: "#2E2E2E" }, // Dark background
-    text: {
-      primary: "#FFFFFF", // Default text color (white on dark)
-      secondary: "#FF8C00", // Orange text
-    },
+    primary: { main: "#FF8C00" },
+    secondary: { main: "#333333" },
+    background: { default: "#1C1C1C", paper: "#2E2E2E" },
+    text: { primary: "#FFFFFF", secondary: "#FF8C00" },
   },
   typography: {
-    fontFamily: "'Lexend', Arial, sans-serif", // Apply Lexend globally
-    h5: { fontWeight: 700, color: "#FF8C00" }, // Orange headers
+    fontFamily: "'Lexend', Arial, sans-serif",
+    h5: { fontWeight: 700, color: "#FF8C00" },
     h6: { fontWeight: 600 },
-    body1: { fontSize: "1rem", color: "#FFFFFF" }, // White body text
-    body2: { fontSize: "0.9rem", color: "#AAAAAA" }, // Muted gray text
+    body1: { fontSize: "1rem", color: "#FFFFFF" },
+    body2: { fontSize: "0.9rem", color: "#AAAAAA" },
   },
 });
 
@@ -63,19 +58,16 @@ const App = () => (
   <ThemeProvider theme={theme}>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthContextProvider> {/* Wrap here */}
+        <AuthContextProvider>
           <MoviesContextProvider>
             <SiteHeader />
             <Routes>
-              {/* Public Pages */}
               <Route path="/" element={<HomePage />} />
               <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
               <Route path="/movies/trending" element={<TrendingMoviesPage />} />
               <Route path="/movies/toprated" element={<TopRatedMoviesPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
-
-              {/* Protected Routes */}
               <Route element={<ProtectedRoutes />}>
                 <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
                 <Route path="/movies/mustwatch" element={<MustWatchPage />} />
@@ -86,12 +78,10 @@ const App = () => (
                 <Route path="/company/:id" element={<MoviesByProductionPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
               </Route>
-
-              {/* Redirect for undefined routes */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </MoviesContextProvider>
-        </AuthContextProvider> {/* End wrapping here */}
+        </AuthContextProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

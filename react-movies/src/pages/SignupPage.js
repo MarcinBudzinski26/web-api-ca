@@ -16,32 +16,57 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password visibility
 
-  const register = async () => {
+const register = async () => {
     let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
     const validPassword = passwordRegEx.test(password);
 
     if (!validPassword) {
-      setNotification({
-        open: true,
-        message: "Password must be at least 8 characters long and contain one letter, one digit, and one special character.",
-        severity: "error",
-      });
-      return;
+        setNotification({
+            open: true,
+            message: "Password must be at least 8 characters, include letters, numbers, and special characters.",
+            severity: "error",
+        });
+        return;
     }
 
     if (password !== passwordAgain) {
-      setNotification({ open: true, message: "Passwords do not match.", severity: "error" });
-      return;
+        setNotification({
+            open: true,
+            message: "Passwords do not match.",
+            severity: "error",
+        });
+        return;
     }
 
-    const success = await context.register(userName, password);
-    if (success) {
-      setRegistered(true);
-      setNotification({ open: true, message: "Registration successful! Redirecting to login...", severity: "success" });
-    } else {
-      setNotification({ open: true, message: "Registration failed. Try a different username.", severity: "error" });
+    try {
+        const result = await context.register(userName, password);
+
+        // Handle backend response
+        if (result) {
+            setNotification({
+                open: true,
+                message: "Registration successful!",
+                severity: "success",
+            });
+            setTimeout(() => {
+                setRegistered(true); // Redirect to login after success
+            }, 1500);
+        } else {
+            setNotification({
+                open: true,
+                message: "Registration failed. Username may already exist.",
+                severity: "error",
+            });
+        }
+    } catch (error) {
+        setNotification({
+            open: true,
+            message: "An error occurred during registration. Please try again.",
+            severity: "error",
+        });
     }
-  };
+};
+
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword); // Toggle password visibility
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword); // Toggle confirm password visibility
@@ -100,7 +125,7 @@ const SignUpPage = () => {
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
           sx={{
-            marginBottom: "20px",
+            marginBottom: "30px",
             "& .MuiInputBase-input": {
               color: "#000", // Text color
             },
@@ -114,6 +139,9 @@ const SignUpPage = () => {
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#FFA500", // Label color when focused
             },
+            "& .MuiInputLabel-shrink": {
+                transform: "translate(14px, -22px) scale(0.75)", // Move label higher when focused/shrink
+              },
           }}
         />
         <TextField
@@ -124,7 +152,7 @@ const SignUpPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           sx={{
-            marginBottom: "20px",
+            marginBottom: "30px",
             "& .MuiInputBase-input": {
               color: "#000", // Text color
             },
@@ -138,15 +166,9 @@ const SignUpPage = () => {
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#FFA500", // Label color when focused
             },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={togglePasswordVisibility} edge="end">
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
+            "& .MuiInputLabel-shrink": {
+                transform: "translate(14px, -22px) scale(0.75)", // Move label higher when focused/shrink
+              },
           }}
         />
         <TextField
@@ -157,7 +179,7 @@ const SignUpPage = () => {
           value={passwordAgain}
           onChange={(e) => setPasswordAgain(e.target.value)}
           sx={{
-            marginBottom: "20px",
+            marginBottom: "30px",
             "& .MuiInputBase-input": {
               color: "#000", // Text color
             },
@@ -171,15 +193,9 @@ const SignUpPage = () => {
             "& .MuiInputLabel-root.Mui-focused": {
               color: "#FFA500", // Label color when focused
             },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={toggleConfirmPasswordVisibility} edge="end">
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
+            "& .MuiInputLabel-shrink": {
+                transform: "translate(14px, -22px) scale(0.75)", // Move label higher when focused/shrink
+              },
           }}
         />
         <Button

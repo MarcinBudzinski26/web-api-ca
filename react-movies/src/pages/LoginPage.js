@@ -76,7 +76,7 @@ const LoginPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           sx={{
-            marginBottom: "20px",
+            marginBottom: "30px",
             "& .MuiInputBase-input": {
               color: "#000", // Text color
             },
@@ -104,7 +104,7 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           sx={{
-            marginBottom: "20px",
+            marginBottom: "30px",
             "& .MuiInputBase-input": {
               color: "#000", // Text color
             },
